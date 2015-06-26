@@ -4,10 +4,14 @@ require 'brainfuck'
 
 RSpec.configure do |config|
   config.around(:each) do |example|
-    Pry.rescue do
-      err = example.run
-      pending = err.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
-      Pry.rescued(err) if err && !pending && $stdin.tty? && $stdout.tty?
+    if ENV['NO_RESCUE'] == 'true'
+      example.run
+    else
+      Pry.rescue do
+        err = example.run
+        pending = err.is_a?(RSpec::Core::Pending::PendingExampleFixedError)
+        Pry.rescued(err) if err && !pending && $stdin.tty? && $stdout.tty?
+      end
     end
   end
 end
