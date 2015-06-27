@@ -7,3 +7,4 @@ end
 require 'brainfuck/version'
 require 'brainfuck/consumer'
 require 'brainfuck/parser'
+require 'brainfuck/lexer'
