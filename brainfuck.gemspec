@@ -14,12 +14,12 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
   spec.files         = `git ls-files -z`.split("\x0")
   spec.require_paths = ['lib']
-  spec.add_dependency 'pry', '~> 0.10.1'
   spec.add_development_dependency 'bundler', '~> 1.9'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'yard'
+  spec.add_development_dependency 'pry'
   spec.add_development_dependency 'pry-stack_explorer'
   spec.add_development_dependency 'pry-rescue'
 end
