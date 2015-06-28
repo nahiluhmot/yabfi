@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version               = YABFI::VERSION
   spec.authors               = ['Tom Hulihan']
   spec.email                 = ['hulihan.tom159@gmail.com']
-  spec.summary               = 'Yet Another BrainFuck Interpreter written in Ruby'
+  spec.summary               = 'Yet Another BrainFuck Interpreter'
   spec.description           = spec.summary
   spec.homepage              = 'https://github.com/nahiluhmot/yabfi'
   spec.license               = 'MIT'
