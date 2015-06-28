@@ -2,14 +2,11 @@ module Brainfuck
   # This class provides generic methods to declaratively consume an Array of
   # input.
   class Consumer
-    # Base error for all Consumer errors.
-    Error = Class.new(StandardError)
-
     # Raised when the expected input does not match the given input.
-    Unsatisfied = Class.new(Error)
+    Unsatisfied = Class.new(StandardError)
 
     # Raised when the end of input is reached.
-    EndOfInput = Class.new(Error)
+    EndOfInput = Class.new(StandardError)
 
     # @attr_reader [Array<Object>] tokens to consume.
     attr_reader :tokens
