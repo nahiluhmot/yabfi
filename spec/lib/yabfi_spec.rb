@@ -11,7 +11,7 @@ describe YABFI do
     let(:output) { StringIO.new }
     let(:eof) { 0 }
 
-    before { subject.eval!(commands, input, output, eof) }
+    before { subject.eval!(commands, input: input, output: output, eof: eof) }
 
     context 'when the program is "Hello World"' do
       let(:commands) do

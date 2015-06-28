@@ -6,9 +6,9 @@ require 'optparse'
 options = {
   input: $stdin,
   output: $stdout,
-  eof: 0,
-  commands: ''
+  eof: 0
 }
+commands = nil
 
 parser = OptionParser.new do |opts|
   opts.banner = 'Usage: yabfi [options]'
@@ -18,11 +18,11 @@ parser = OptionParser.new do |opts|
   opts.separator 'Specific Options:'
 
   opts.on('-x', '--execute COMMANDS', 'Commands to execute from ARGV') do |cs|
-    options[:commands] = cs
+    commands = cs
   end
 
   opts.on('-c', '--commands FILE', 'The file to read commands from') do |cs|
-    options[:commands] = File.open(cs, 'r')
+    commands = File.open(cs, 'r')
   end
 
   opts.on('-i', '--input FILE', 'The file from which to read input') do |input|
@@ -42,8 +42,8 @@ parser.parse!(ARGV)
 
 begin
   exit_val = -1
-  fail 'No commands given' unless options[:commands]
-  YABFI.eval!(*options.values_at(:commands, :input, :output, :eof))
+  fail 'No commands given' if commands.nil?
+  YABFI.eval!(commands, **options)
   exit_val = 0
 rescue YABFI::BaseError => ex
   puts "Error in source file: #{ex.class.name}: #{ex.message}"
