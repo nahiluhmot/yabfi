@@ -13,8 +13,15 @@ RuboCop::RakeTask.new(:quality)
 desc 'Generate gem documentation'
 YARD::Rake::YardocTask.new(:doc)
 
+desc 'Load the gem source code'
+task :environment do
+  lib = File.expand_path('lib', File.dirname(__FILE__))
+  $LOAD_PATH << lib unless $LOAD_PATH.include?(lib)
+  require 'yabfi'
+end
+
 desc 'Start a pry shell in the context of the YABFI module'
-task :shell do
+task shell: :environment do
   Pry.start(YABFI)
 end
 
