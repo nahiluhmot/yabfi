@@ -3,10 +3,10 @@ module Brainfuck
   # input.
   class Consumer
     # Raised when the expected input does not match the given input.
-    Unsatisfied = Class.new(StandardError)
+    Unsatisfied = Class.new(BaseError)
 
     # Raised when the end of input is reached.
-    EndOfInput = Class.new(StandardError)
+    EndOfInput = Class.new(BaseError)
 
     # @attr_reader [Array<Object>] tokens to consume.
     attr_reader :tokens

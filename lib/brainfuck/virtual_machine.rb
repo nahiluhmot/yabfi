@@ -3,14 +3,14 @@ module Brainfuck
   # pipeline.
   class VirtualMachine
     # Raised when the memory cursor goes beyond zero.
-    MemoryOutOfBounds = Class.new(StandardError)
+    MemoryOutOfBounds = Class.new(BaseError)
 
     # Raised when an invalid command is passed to the VM.
-    InvalidCommand = Class.new(StandardError)
+    InvalidCommand = Class.new(BaseError)
 
     # Raised when the VM is given more commands to execute while it is already
     # executing a set of commands.
-    ConcurrentExecution = Class.new(StandardError)
+    ConcurrentExecution = Class.new(BaseError)
 
     # The initial size of the memory.
     INITIAL_MEMORY_SIZE = 32
