@@ -1,3 +1,5 @@
+require 'stringio'
+
 # YABFI (Yet Another BrainFuck Interpreter) is the top level module for the gem.
 module YABFI
   # This is the base error for the gem from which the rest of the errors
