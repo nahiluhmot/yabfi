@@ -1,5 +1,7 @@
 # YABFI
 
+[![Build Status](https://travis-ci.org/nahiluhmot/yabfi.svg)](https://travis-ci.org/nahiluhmot/yabfi)
+
 Yet another YABFI interpreter written in Ruby.
 
 ## Installation
