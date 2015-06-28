@@ -34,4 +34,5 @@ task :clean do
   end
 end
 
+desc 'Run the specs, quality metrics, and documentation tasks'
 task default: [:clean, :spec, :quality, :doc]
