@@ -56,7 +56,6 @@ module YABFI
     # @raise [ConcurrentExecution] when the VM is already executing commands.
     def load!(commands)
       fail ConcurrentExecution if @executing
-      @executing = true
       @program_counter = 0
       @cursor = 0
       @commands = commands
@@ -70,6 +69,7 @@ module YABFI
     # @raise [MemoryOutOfBounds] when the VM's memory cursor goes below zero.
     # @return [nil]
     def execute!
+      @executing = true
       until @program_counter >= @commands.length
         command, arg = @commands[@program_counter]
         send(command, arg)
