@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+require 'brainfuck'
+require 'optparse'
+
+options = {
+  input: $stdin,
+  output: $stdout,
+  eof: 0,
+  commands: ''
+}
+
+parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: brainfuck [options]'
+
+  opts.version = Brainfuck::VERSION
+  opts.separator ''
+  opts.separator 'Specific Options:'
+
+  opts.on('-x', '--execute COMMANDS', 'Commands to execute from the CLI') do |cs|
+    options[:commands] = cs
+  end
+
+  opts.on('-c', '--commands FILE', 'The file to read commands from') do |cs|
+    options[:commands] = File.open(cs, 'r')
+  end
+
+  opts.on('-i', '--input FILE', 'The file from which to read input') do |input|
+    options[:input] = File.open(input, 'r')
+  end
+
+  opts.on('-o', '--output FILE', 'The file to which to write output') do |out|
+    options[:output] = File.open(out, 'w')
+  end
+
+  opts.on('-e', '--eof N', Integer, 'The Integer to return at EOF') do |eof|
+    options[:eof] = eof
+  end
+end
+
+parser.parse!(ARGV)
+
+begin
+  exit_val = -1
+  fail 'No commands given' unless options[:commands]
+  Brainfuck.eval!(*options.values_at(:commands, :input, :output, :eof))
+  exit_val = 0
+rescue Brainfuck::BaseError => ex
+  puts "Error in source file: #{ex.class.name}: #{ex.message}"
+  exit_val = 1
+rescue => ex
+  puts "Error in interpreter: #{ex.class.name}: #{ex.message}"
+  exit_val = 2
+ensure
+  exit(exit_val)
+end
