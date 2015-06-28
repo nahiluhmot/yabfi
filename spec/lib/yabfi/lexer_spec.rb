@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Brainfuck::Lexer do
+describe YABFI::Lexer do
   subject { described_class }
 
   describe '#run!' do
@@ -16,7 +16,7 @@ describe Brainfuck::Lexer do
 
       it 'fails with Consumer::Unsatisfied' do
         expect { subject.run!(input) }
-          .to raise_error(Brainfuck::Consumer::Unsatisfied)
+          .to raise_error(YABFI::Consumer::Unsatisfied)
       end
     end
 

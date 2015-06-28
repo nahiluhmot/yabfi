@@ -1,4 +1,4 @@
-module Brainfuck
+module YABFI
   # This module contains a set of functions that lazily parse an IO object and
   # yield a symbol for each non-comment character that is read in.
   module Parser

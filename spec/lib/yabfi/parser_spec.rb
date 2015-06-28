@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Brainfuck::Parser do
+describe YABFI::Parser do
   describe '.parse' do
     let(:io) { StringIO.new('+-<>,.[] some comment') }
     let(:enum) { subject.parse(io) }

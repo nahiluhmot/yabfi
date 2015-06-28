@@ -1,5 +1,5 @@
-# Brainfuck is the top level module for the gem.
-module Brainfuck
+# YABFI (Yet Another BrainFuck Interpreter) is the top level module for the gem.
+module YABFI
   # This is the base error for the gem from which the rest of the errors
   # subclass.
   BaseError = Class.new(StandardError)
@@ -24,9 +24,9 @@ module Brainfuck
   end
 end
 
-require 'brainfuck/version'
-require 'brainfuck/consumer'
-require 'brainfuck/parser'
-require 'brainfuck/lexer'
-require 'brainfuck/unroll'
-require 'brainfuck/virtual_machine'
+require 'yabfi/version'
+require 'yabfi/consumer'
+require 'yabfi/parser'
+require 'yabfi/lexer'
+require 'yabfi/unroll'
+require 'yabfi/virtual_machine'

@@ -1,4 +1,4 @@
-module Brainfuck
+module YABFI
   # This module is used to transforms unrolls loops into multiple
   # branch_if_zero and branch_not_zero instructions.
   module Unroll

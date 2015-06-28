@@ -1,4 +1,4 @@
-module Brainfuck
+module YABFI
   # This class provides generic methods to declaratively consume an Array of
   # input.
   class Consumer

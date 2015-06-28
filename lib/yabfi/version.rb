@@ -1,5 +1,5 @@
-# Brainfuck is the top level module for the gem.
-module Brainfuck
+# YABFI is the top level module for the gem.
+module YABFI
   # Gem (semantic) version.
   VERSION = '0.0.0'
 end

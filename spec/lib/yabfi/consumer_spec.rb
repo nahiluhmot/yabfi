@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Brainfuck::Consumer do
+describe YABFI::Consumer do
   subject { described_class.new(input) }
   let(:input) { [] }
 
@@ -85,7 +85,7 @@ describe Brainfuck::Consumer do
       context 'but the predicate returns a falsey value' do
         it 'fails with a Unsatisfied' do
           expect { subject.satisfy(&:odd?) }
-            .to raise_error(Brainfuck::Consumer::Unsatisfied)
+            .to raise_error(YABFI::Consumer::Unsatisfied)
         end
       end
 
@@ -115,7 +115,7 @@ describe Brainfuck::Consumer do
       context 'but the expected token does not match the actual token' do
         it 'fails with a Unsatisfied' do
           expect { subject.eq('dog') }
-            .to raise_error(Brainfuck::Consumer::Unsatisfied)
+            .to raise_error(YABFI::Consumer::Unsatisfied)
         end
       end
 
@@ -143,7 +143,7 @@ describe Brainfuck::Consumer do
       context 'but the expeted tokens do not match the actual token' do
         it 'fails with a Unsatisfied' do
           expect { subject.one_of(:hey, :hi, :howdy) }
-            .to raise_error(Brainfuck::Consumer::Unsatisfied)
+            .to raise_error(YABFI::Consumer::Unsatisfied)
         end
       end
 

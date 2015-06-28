@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Brainfuck::Unroll do
+describe YABFI::Unroll do
   describe '.unroll' do
     let(:tokens) do
       %i(
@@ -20,7 +20,7 @@ describe Brainfuck::Unroll do
         pred
       )
     end
-    let(:input) { Brainfuck::Lexer.run!(tokens) }
+    let(:input) { YABFI::Lexer.run!(tokens) }
     let(:expected) do
       [
         [:change_value, 2],

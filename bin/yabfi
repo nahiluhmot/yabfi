@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'brainfuck'
+require 'yabfi'
 require 'optparse'
 
 options = {
@@ -11,13 +11,13 @@ options = {
 }
 
 parser = OptionParser.new do |opts|
-  opts.banner = 'Usage: brainfuck [options]'
+  opts.banner = 'Usage: yabfi [options]'
 
-  opts.version = Brainfuck::VERSION
+  opts.version = YABFI::VERSION
   opts.separator ''
   opts.separator 'Specific Options:'
 
-  opts.on('-x', '--execute COMMANDS', 'Commands to execute from the CLI') do |cs|
+  opts.on('-x', '--execute COMMANDS', 'Commands to execute from ARGV') do |cs|
     options[:commands] = cs
   end
 
@@ -43,9 +43,9 @@ parser.parse!(ARGV)
 begin
   exit_val = -1
   fail 'No commands given' unless options[:commands]
-  Brainfuck.eval!(*options.values_at(:commands, :input, :output, :eof))
+  YABFI.eval!(*options.values_at(:commands, :input, :output, :eof))
   exit_val = 0
-rescue Brainfuck::BaseError => ex
+rescue YABFI::BaseError => ex
   puts "Error in source file: #{ex.class.name}: #{ex.message}"
   exit_val = 1
 rescue => ex

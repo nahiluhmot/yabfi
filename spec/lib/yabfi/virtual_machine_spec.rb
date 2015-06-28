@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Brainfuck::VirtualMachine do
+describe YABFI::VirtualMachine do
   let(:input) { StringIO.new }
   let(:output) { StringIO.new }
   let(:eof) { -1 }

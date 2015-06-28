@@ -1,4 +1,4 @@
-module Brainfuck
+module YABFI
   # This module consumes tokens produced by the Parser and produces an
   # unoptimized syntax tree.
   class Lexer < Consumer

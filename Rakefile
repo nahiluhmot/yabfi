@@ -13,9 +13,9 @@ RuboCop::RakeTask.new(:quality)
 desc 'Generate gem documentation'
 YARD::Rake::YardocTask.new(:doc)
 
-desc 'Start a pry shell in the context of the Brainfuck module'
+desc 'Start a pry shell in the context of the YABFI module'
 task :shell do
-  Pry.start(Brainfuck)
+  Pry.start(YABFI)
 end
 
 task default: [:spec, :quality, :doc]
