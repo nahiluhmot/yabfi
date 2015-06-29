@@ -12,7 +12,10 @@ Gem::Specification.new do |spec|
   spec.description           = spec.summary
   spec.homepage              = 'https://github.com/nahiluhmot/yabfi'
   spec.license               = 'MIT'
-  spec.files                 = `git ls-files -z`.split("\x0")
+  spec.files                 = [
+    `git ls-files -z`.split("\x0"),
+    'lib/yabfi/vm.bundle'
+  ].flatten
   spec.require_paths         = ['lib']
   spec.executables           = ['yabfi']
   spec.required_ruby_version = '>= 2.0.0'

@@ -5,12 +5,19 @@ require 'rubocop/rake_task'
 require 'pry'
 require 'yard'
 
+# Reference to the gemspec used by rake-compiler and the package taks.
+GEMSPEC = Gem::Specification.find_by_name('yabfi')
+
 desc 'Compile the C virtual machine'
 Rake::ExtensionTask.new do |task|
   task.name = 'vm'
   task.ext_dir = 'ext/yabfi'
   task.lib_dir = 'lib/yabfi'
+  task.gem_spec = GEMSPEC
 end
+
+desc 'Make package tasks for the gem'
+Gem::PackageTask.new(GEMSPEC)
 
 desc 'Run the specs'
 RSpec::Core::RakeTask.new(spec: :compile)
