@@ -20,8 +20,9 @@ module YABFI
     tokens = Parser.parse(io)
     lexed = Lexer.run!(tokens.to_a)
     commands = Unroll.unroll(lexed)
-    vm = VirtualMachine.new(input, output, eof)
-    vm.load!(commands)
+    encoded = Encoder.encode(commands)
+    vm = VM.new(input, output, eof)
+    vm.load!(encoded)
     vm.execute!
   end
 end
@@ -32,5 +33,4 @@ require 'yabfi/parser'
 require 'yabfi/lexer'
 require 'yabfi/unroll'
 require 'yabfi/encoder'
-require 'yabfi/virtual_machine'
 require 'yabfi/vm'
