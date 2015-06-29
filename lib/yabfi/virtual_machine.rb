@@ -104,7 +104,10 @@ module YABFI
       @program_counter += 1
       @cursor += n
       fail MemoryOutOfBounds if @cursor < 0
-      reallocate! if @cursor >= @memory.length
+      while @cursor >= @memory.length
+        size = MAX_ALLOCATION > @memory.length ? MAX_ALLOCATION : @memory.length
+        @memory += Array.new(size, 0)
+      end
     end
 
     def get(n)
@@ -130,13 +133,6 @@ module YABFI
         @program_counter += 1
       else
         @program_counter += n
-      end
-    end
-
-    def reallocate!
-      while @cursor >= @memory.length
-        size = MAX_ALLOCATION > @memory.length ? MAX_ALLOCATION : @memory.length
-        @memory += Array.new(size, 0)
       end
     end
   end
