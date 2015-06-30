@@ -267,11 +267,11 @@ vm_execute(VALUE self) {
         break;
       case INSTRUCTION_PUT:
         buffer = malloc(sizeof(char) * curr.argument);
-        for (iter = 0; iter < curr.argument; iter++) {
-          buffer[iter] = ptr->memory[ptr->memory_cursor];
-        }
+        memset(buffer, ptr->memory[ptr->memory_cursor],
+            sizeof(char) * curr.argument);
         rb_funcall(ptr->output, rb_intern("write"), 1,
             rb_tainted_str_new(buffer, curr.argument));
+        free(buffer);
         ptr->program_counter++;
         break;
       default:
