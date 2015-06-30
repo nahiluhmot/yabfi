@@ -9,13 +9,14 @@ Gem::Specification.new do |spec|
   spec.authors               = ['Tom Hulihan']
   spec.email                 = ['hulihan.tom159@gmail.com']
   spec.summary               = 'Yet Another BrainFuck Interpreter'
-  spec.description           = spec.summary
+  spec.description           = [
+    'This gem uses native C extensions to interpret Brainfuck programs.',
+    'An optimizing compiler written in Ruby sits on top of the interpreter',
+    'which speeds up the computation quite a bit.'
+  ].join(' ')
   spec.homepage              = 'https://github.com/nahiluhmot/yabfi'
   spec.license               = 'MIT'
-  spec.files                 = [
-    `git ls-files -z`.split("\x0"),
-    'lib/yabfi/vm.bundle'
-  ].flatten
+  spec.files                 = `git ls-files -z`.split("\x0")
   spec.require_paths         = ['lib']
   spec.executables           = ['yabfi']
   spec.required_ruby_version = '>= 2.0.0'
