@@ -9,6 +9,11 @@
 #define MAX_REALLOCATION 32768
 
 /**
+ * Size of the temporary buffer used by PUT instructions.
+ */
+#define INITIAL_BUFFER_SIZE 32
+
+/**
  * Constants that map human readable names to instruction codes.
  */
 #define INSTRUCTION_CHANGE_VALUE 0
@@ -204,12 +209,15 @@ vm_execute(VALUE self) {
   vm *ptr;
   char *buffer;
   int *tmp_memory;
+  int buffer_size;
   int delta;
   int iter;
   int input;
   instruction curr;
 
   Data_Get_Struct(self, vm, ptr);
+  buffer_size = INITIAL_BUFFER_SIZE;
+  buffer = malloc(buffer_size * sizeof(char));
 
   while (ptr->program_counter < ptr->instructions_length) {
     curr = ptr->instructions[ptr->program_counter];
@@ -221,21 +229,19 @@ vm_execute(VALUE self) {
       case INSTRUCTION_CHANGE_POINTER:
         if (((int) ptr->memory_cursor + curr.argument) < 0) {
           rb_raise(rb_cMemoryOutOfBounds, "The memory cursor went below zero");
-        } else {
-          ptr->memory_cursor += curr.argument;
-          while (ptr->memory_cursor >= ptr->memory_length) {
-            delta = ptr->memory_length;
-            if (delta > MAX_REALLOCATION) {
-              delta = MAX_REALLOCATION;
-            }
-            tmp_memory = ptr->memory;
-            ptr->memory = malloc((ptr->memory_length + delta) * sizeof(int));
-            memcpy(ptr->memory, tmp_memory, ptr->memory_length * sizeof(int));
-            memset(ptr->memory + ptr->memory_length, 0, delta * sizeof(int));
-            ptr->memory_length += delta;
-            free(tmp_memory);
-            tmp_memory = NULL;
+        }
+        ptr->memory_cursor += curr.argument;
+        while (ptr->memory_cursor >= ptr->memory_length) {
+          delta = ptr->memory_length;
+          if (delta > MAX_REALLOCATION) {
+            delta = MAX_REALLOCATION;
           }
+          tmp_memory = ptr->memory;
+          ptr->memory = malloc((ptr->memory_length + delta) * sizeof(int));
+          memcpy(ptr->memory, tmp_memory, ptr->memory_length * sizeof(int));
+          memset(ptr->memory + ptr->memory_length, 0, delta * sizeof(int));
+          ptr->memory_length += delta;
+          free(tmp_memory);
         }
         ptr->program_counter++;
         break;
@@ -266,18 +272,24 @@ vm_execute(VALUE self) {
         ptr->program_counter++;
         break;
       case INSTRUCTION_PUT:
-        buffer = malloc(sizeof(char) * curr.argument);
+        if (buffer_size < curr.argument) {
+          free(buffer);
+          buffer_size = curr.argument;
+          buffer = malloc(buffer_size * sizeof(char));
+        }
         memset(buffer, ptr->memory[ptr->memory_cursor],
-            sizeof(char) * curr.argument);
+            curr.argument * sizeof(char));
         rb_funcall(ptr->output, rb_intern("write"), 1,
-            rb_tainted_str_new(buffer, curr.argument));
-        free(buffer);
+            rb_str_new(buffer, curr.argument));
         ptr->program_counter++;
         break;
       default:
+        free(buffer);
         rb_raise(rb_cInvalidCommand, "Invalid command code: %i", curr.code);
     }
   }
+
+  free(buffer);
 
   return Qnil;
 }
