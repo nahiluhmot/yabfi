@@ -212,7 +212,6 @@ vm_execute(VALUE self) {
   int buffer_size;
   int delta;
   int iter;
-  int input;
   instruction curr;
 
   Data_Get_Struct(self, vm, ptr);
@@ -260,15 +259,14 @@ vm_execute(VALUE self) {
         }
         break;
       case INSTRUCTION_GET:
-        input = 0;
         for (iter = 0; iter < curr.argument; iter++) {
           if (rb_funcall(ptr->input, rb_intern("eof?"), 0)) {
-            input = ptr->eof;
+            ptr->memory[ptr->memory_cursor] = ptr->eof;
           } else {
-            input = FIX2INT(rb_funcall(ptr->input, rb_intern("getbyte"), 0));
+            ptr->memory[ptr->memory_cursor] =
+              FIX2INT(rb_funcall(ptr->input, rb_intern("getbyte"), 0));
           }
         }
-        ptr->memory[ptr->memory_cursor] = input;
         ptr->program_counter++;
         break;
       case INSTRUCTION_PUT:
