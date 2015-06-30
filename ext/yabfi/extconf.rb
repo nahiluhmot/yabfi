@@ -4,4 +4,4 @@ require 'mkmf'
   abort "missing #{func}()" unless have_func(func)
 end
 
-create_makefile 'yafbi/vm'
+create_makefile 'yabfi/vm'
