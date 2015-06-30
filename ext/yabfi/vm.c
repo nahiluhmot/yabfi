@@ -71,7 +71,6 @@ static VALUE rb_cInvalidCommand;
  */
 static VALUE rb_cMemoryOutOfBounds;
 
-
 /**
  * Free the allocated memory for the virtual machine.
  */
@@ -142,7 +141,7 @@ vm_initialize(VALUE self, VALUE input, VALUE output, VALUE rb_eof) {
 };
 
 /**
- * Initialize a new VM.
+ * Load the VM with new instructions.
  *
  * @param ary [Array<Object>] list of instructions to execute.
  * @return [nil] unconditionally.
@@ -186,7 +185,6 @@ vm_load(VALUE self, VALUE ary) {
 
   return Qnil;
 }
-
 
 /**
  * Execute the instructions loaded into the VM.
