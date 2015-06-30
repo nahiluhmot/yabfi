@@ -133,7 +133,6 @@ vm_alloc(VALUE klass) {
 static VALUE
 vm_initialize(VALUE self, VALUE input, VALUE output, VALUE rb_eof) {
   vm *ptr;
-  int eof;
 
   Check_Type(rb_eof, T_FIXNUM);
   Data_Get_Struct(self, vm, ptr);
@@ -175,7 +174,7 @@ vm_load(VALUE self, VALUE ary) {
   ptr->instructions_length = RARRAY_LEN(ary);
   ptr->instructions = malloc(sizeof(instruction) * ptr->instructions_length);
 
-  for (iter = 0; iter < ptr->instructions_length; iter++) {
+  for (iter = 0; iter < (int) ptr->instructions_length; iter++) {
     entry = rb_ary_entry(ary, iter);
     Check_Type(entry, T_ARRAY);
     if (RARRAY_LEN(entry) != 2) {
