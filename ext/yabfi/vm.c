@@ -40,12 +40,15 @@ typedef struct {
   int eof;
 
   instruction *instructions;
-  size_t instructions_length;
+  size_t instructions_size;
   size_t program_counter;
 
   int *memory;
-  size_t memory_length;
+  size_t memory_size;
   size_t memory_cursor;
+
+  char *buffer;
+  size_t buffer_size;
 } vm;
 
 /**
@@ -83,12 +86,16 @@ static void
 vm_free(void *p) {
   vm *ptr = p;
 
-  if (ptr->instructions_length > 0) {
+  if (ptr->instructions_size > 0) {
     free(ptr->instructions);
   }
 
-  if (ptr->memory_length > 0) {
+  if (ptr->memory_size > 0) {
     free(ptr->memory);
+  }
+
+  if (ptr->buffer_size > 0) {
+    free(ptr->buffer);
   }
 }
 
@@ -107,12 +114,15 @@ vm_alloc(VALUE klass) {
   ptr->eof = 0;
 
   ptr->instructions = NULL;
-  ptr->instructions_length = 0;
+  ptr->instructions_size = 0;
   ptr->program_counter = 0;
 
   ptr->memory = NULL;
-  ptr->memory_length = 0;
+  ptr->memory_size = 0;
   ptr->memory_cursor = 0;
+
+  ptr->buffer = NULL;
+  ptr->buffer_size = 0;
 
   return instance;
 }
@@ -166,15 +176,20 @@ vm_load(VALUE self, VALUE ary) {
 
   Check_Type(ary, T_ARRAY);
 
+  vm_free(ptr);
+
   ptr->memory_cursor = 0;
-  ptr->memory_length = INITIAL_MEMORY_SIZE;
+  ptr->memory_size = INITIAL_MEMORY_SIZE;
   ptr->memory = calloc(INITIAL_MEMORY_SIZE, sizeof(int));
 
   ptr->program_counter = 0;
-  ptr->instructions_length = RARRAY_LEN(ary);
-  ptr->instructions = malloc(sizeof(instruction) * ptr->instructions_length);
+  ptr->instructions_size = RARRAY_LEN(ary);
+  ptr->instructions = malloc(sizeof(instruction) * ptr->instructions_size);
 
-  for (iter = 0; iter < (int) ptr->instructions_length; iter++) {
+  ptr->buffer_size = INITIAL_BUFFER_SIZE;
+  ptr->buffer = malloc(INITIAL_BUFFER_SIZE * sizeof(char));
+
+  for (iter = 0; iter < (int) ptr->instructions_size; iter++) {
     entry = rb_ary_entry(ary, iter);
     Check_Type(entry, T_ARRAY);
     if (RARRAY_LEN(entry) != 2) {
@@ -206,18 +221,14 @@ vm_load(VALUE self, VALUE ary) {
 static VALUE
 vm_execute(VALUE self) {
   vm *ptr;
-  char *buffer;
   int *tmp_memory;
-  int buffer_size;
   int delta;
   int iter;
   instruction curr;
 
   Data_Get_Struct(self, vm, ptr);
-  buffer_size = INITIAL_BUFFER_SIZE;
-  buffer = malloc(buffer_size * sizeof(char));
 
-  while (ptr->program_counter < ptr->instructions_length) {
+  while (ptr->program_counter < ptr->instructions_size) {
     curr = ptr->instructions[ptr->program_counter];
     switch (curr.code) {
       case INSTRUCTION_CHANGE_VALUE:
@@ -229,16 +240,16 @@ vm_execute(VALUE self) {
           rb_raise(rb_cMemoryOutOfBounds, "The memory cursor went below zero");
         }
         ptr->memory_cursor += curr.argument;
-        while (ptr->memory_cursor >= ptr->memory_length) {
-          delta = ptr->memory_length;
+        while (ptr->memory_cursor >= ptr->memory_size) {
+          delta = ptr->memory_size;
           if (delta > MAX_REALLOCATION) {
             delta = MAX_REALLOCATION;
           }
           tmp_memory = ptr->memory;
-          ptr->memory = malloc((ptr->memory_length + delta) * sizeof(int));
-          memcpy(ptr->memory, tmp_memory, ptr->memory_length * sizeof(int));
-          memset(ptr->memory + ptr->memory_length, 0, delta * sizeof(int));
-          ptr->memory_length += delta;
+          ptr->memory = malloc((ptr->memory_size + delta) * sizeof(int));
+          memcpy(ptr->memory, tmp_memory, ptr->memory_size * sizeof(int));
+          memset(ptr->memory + ptr->memory_size, 0, delta * sizeof(int));
+          ptr->memory_size += delta;
           free(tmp_memory);
         }
         ptr->program_counter++;
@@ -269,24 +280,21 @@ vm_execute(VALUE self) {
         ptr->program_counter++;
         break;
       case INSTRUCTION_PUT:
-        if (buffer_size < curr.argument) {
-          free(buffer);
-          buffer_size = curr.argument;
-          buffer = malloc(buffer_size * sizeof(char));
+        if (ptr->buffer_size < curr.argument) {
+          free(ptr->buffer);
+          ptr->buffer_size = curr.argument;
+          ptr->buffer = malloc(ptr->buffer_size * sizeof(char));
         }
-        memset(buffer, ptr->memory[ptr->memory_cursor],
+        memset(ptr->buffer, ptr->memory[ptr->memory_cursor],
             curr.argument * sizeof(char));
         rb_funcall(ptr->output, rb_intern("write"), 1,
-            rb_str_new(buffer, curr.argument));
+            rb_str_new(ptr->buffer, curr.argument));
         ptr->program_counter++;
         break;
       default:
-        free(buffer);
         rb_raise(rb_cInvalidCommand, "Invalid command code: %i", curr.code);
     }
   }
-
-  free(buffer);
 
   return Qnil;
 }
@@ -304,11 +312,11 @@ vm_state(VALUE self) {
 
   rb_hash_aset(hash, ID2SYM(rb_intern("memory_cursor")),
       INT2FIX(ptr->memory_cursor));
-  rb_hash_aset(hash, ID2SYM(rb_intern("memory_length")),
-      INT2FIX(ptr->memory_length));
+  rb_hash_aset(hash, ID2SYM(rb_intern("memory_size")),
+      INT2FIX(ptr->memory_size));
   rb_hash_aset(hash, ID2SYM(rb_intern("program_counter")),
       INT2FIX(ptr->program_counter));
-  if (ptr->memory_cursor < ptr->memory_length) {
+  if (ptr->memory_cursor < ptr->memory_size) {
     rb_hash_aset(hash, ID2SYM(rb_intern("current_value")),
         INT2FIX(ptr->memory[ptr->memory_cursor]));
   } else {
